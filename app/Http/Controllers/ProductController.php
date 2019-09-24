@@ -17,8 +17,6 @@ class ProductController extends Controller
     {
         $products = Product::all();
         return view('viewAll', compact('products'));
-       // return Product::all();
-        //return \App\Product::all();
     }
 
     /**
@@ -39,12 +37,8 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // Create a new product
         $product = Product::create($request->all());
-
-        // Return a response with a product json
-        // representation and a 201 status code
-        return redirect('api/products/index');
+        return redirect('api/products');
     }
 
     /**
@@ -83,11 +77,9 @@ class ProductController extends Controller
         $id = $request->input('id');
         $name = $request->input('name');
         $price = $request->input('price');
-        //return $id.$name.$price;
-
         Product::where('id', $id)
             ->update(['name' => $name, 'price' => $price]);
-        return redirect('api/products/show/'.$id);
+        return redirect('api/products/');
 
     }
 
@@ -99,10 +91,8 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //DB::table('users')->delete($id);
         Product::destroy($id);
-        //return response()->json(204);
-        return redirect('api/products/index/');
+        return redirect('api/products');
     }
 }
 // public function destroy(Product $product)

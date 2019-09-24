@@ -11,9 +11,9 @@
         <div class="panel-body">
 
 
-            <form action="{{url('/api/products/update/'.$product->id)}}" method="get" enctype="multipart/form-data">
+            <form action={{"http://localhost/HolaMundo/public/api/products/".$product->id}} method="post" enctype="multipart/form-data">
                 {{csrf_field()}}
-                {{method_field('GET')}}
+                {{method_field('PUT')}}
                 <input type="hidden" value="{{$product->id}}" name="id">
                 <div class="form-group">
                     <label for="id" class="control-label">ID</label>

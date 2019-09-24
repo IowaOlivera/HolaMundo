@@ -20,9 +20,9 @@ Route::get('/greeting', function (Request $request){
     return 'Hello World!';
 });
 Route::post('products', "ProductController@store");
-Route::get('products/index', "ProductController@index");
-Route::get('products/destroy/{id}', "ProductController@destroy");
-Route::get('products/update/{id}', "ProductController@update");
+Route::get('products', "ProductController@index");
+Route::delete('products/{id}', "ProductController@destroy");
+Route::put('products/{id}', "ProductController@update");
 Route::get('products/show/{id}', "ProductController@show");
 Route::get('products/edit/{id}', "ProductController@edit");
 Route::get('products/create', "ProductController@create");
