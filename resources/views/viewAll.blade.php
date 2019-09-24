@@ -23,6 +23,11 @@
                 {{ method_field('get') }}
                 <button type="submit">Editar </button>
             </form>
+
+            <form class="form-group" action="{{'products/show/'.$product->id}}" method="get">
+                {{ method_field('get') }}
+                <button type="submit">Mostrar producto </button>
+            </form>
             <p>--------------------------------</p>
         @endforeach
 
