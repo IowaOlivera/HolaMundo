@@ -105,7 +105,7 @@
   <component name="ProjectId" id="1QfnRutRHSn7dz1lx7M6RSWumS9" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../blog" />
     <property name="settings.editor.selected.configurable" value="preferences.general" />
   </component>
   <component name="RecentsManager">
@@ -156,6 +156,8 @@
       <workItem from="1569339571268" duration="12914000" />
       <workItem from="1569352899618" duration="39000" />
       <workItem from="1569353059780" duration="89000" />
+      <workItem from="1571005950626" duration="5373000" />
+      <workItem from="1571112193770" duration="11815000" />
     </task>
     <servers />
   </component>

@@ -3,8 +3,11 @@
 
 namespace App\Http\Controllers;
 
+use App\ErrorContent;
+use App\ErrorMessage;
 use App\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -15,8 +18,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
-        return view('viewAll', compact('products'));
+        $product = Product::all();
+        return response()->json($product, 200);
     }
 
     /**
@@ -26,19 +29,30 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('createProduct');
+        //return view('createProduct');
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return ErrorMessage
      */
-    public function store(Request $request)
-    {
-        $product = Product::create($request->all());
-        return redirect('api/products');
+    public function store(Request $request) {
+        $validatedData = Validator::make($request->all(), [
+            'name' => 'required',
+            'price' => 'required|numeric|gte:0'
+        ]);
+        if($validatedData->fails()) {
+            $responseError = new ErrorMessage();
+            array_push($responseError->errors, new ErrorContent(
+                "ERROR-1", "Unprocessable Entity"
+            ));
+            return response()->json($responseError, 422);
+        }else{
+            $product = Product::create($request->all());
+            return response()->json($product, 201);
+        }
     }
 
     /**
@@ -49,8 +63,20 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::findOrFail($id);
-        return $product;
+        $responseError = new ErrorMessage();
+        $product = Product::find($id);
+
+        if(!$product) {
+            array_push($responseError->errors, new ErrorContent(
+                "ERROR-2", "Not Found"
+            ));
+
+            return response()->json($responseError, 404);
+        }else{
+            return response()->json($product, 200);
+        }
+
+
     }
 
     /**
@@ -61,8 +87,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
-        return view('editProduct', compact('product'));
+        //$product = Product::findOrFail($id);
+       // return view('editProduct', compact('product'));
     }
 
     /**
@@ -74,13 +100,28 @@ class ProductController extends Controller
      */
     public function update(Request $request)
     {
-        $id = $request->input('id');
-        $name = $request->input('name');
-        $price = $request->input('price');
-        Product::where('id', $id)
-            ->update(['name' => $name, 'price' => $price]);
-        return redirect('api/products/');
-
+        $id = $request->route('id');
+        $responseError = new ErrorMessage();
+        $product = Product::find($id);
+        if(!$product) {
+            array_push($responseError->errors, new ErrorContent(
+                "ERROR-2", "Not Found"
+            ));
+            return response()->json($responseError, 404);
+        }else{
+            $validatedData = Validator::make($request->all(), [
+                'price' => 'numeric|gte:0'
+            ]);
+        }
+        if($validatedData->fails()) {
+            array_push($responseError->errors, new ErrorContent(
+                "ERROR-1", "Unprocessable Entity"
+            ));
+            return response()->json($responseError, 422);
+        }else{
+            $product->update($request->all());
+            return response()->json($product, 200);
+        }
     }
 
     /**
@@ -91,8 +132,19 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        Product::destroy($id);
-        return redirect('api/products');
+        $responseError = new ErrorMessage();
+        $product = Product::find($id);
+
+        if(!$product) {
+            array_push($responseError->errors, new ErrorContent(
+                "ERROR-2", "Not Found"
+            ));
+
+            return response()->json($responseError, 404);
+        }else{
+            $product->delete();
+            return response()->json(null, 204);
+        }
+
     }
 }
-// public function destroy(Product $product)
