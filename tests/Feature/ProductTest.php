@@ -22,25 +22,22 @@ class ProductTest extends TestCase
     public function test_client_can_create_a_product()
     {
         $productData = [
-            'name' => 'Super Product',
-            'price' => '23.30'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Product',
+                    'price'=> '23.30',
+                ],
+            ]
         ];
+
         $response = $this->json('POST', '/api/products', $productData);
         $response->assertStatus(201);
-        $response->assertJsonStructure([
-            'id',
-            'name',
-            'price'
-        ]);
         $response->assertJsonFragment([
             'name' => 'Super Product',
             'price' => '23.30'
         ]);
-        $body = $response->decodeResponseJson();
         $this->assertDatabaseHas(
-            'products',
-            [
-                'id' => $body['id'],
+            'products', [
                 'name' => 'Super Product',
                 'price' => '23.30'
             ]
@@ -53,7 +50,11 @@ class ProductTest extends TestCase
     public function test_create_product_without_name()
     {
         $productData = [
-            'price' => '23.30'
+            'data' => [
+                'attributes' => [
+                    'price'=> '23.30',
+                ],
+            ]
         ];
 
         $response = $this->json('POST', '/api/products', $productData);
@@ -73,7 +74,11 @@ class ProductTest extends TestCase
     public function test_create_product_without_price()
     {
         $productData = [
-            'name' => 'Super Product'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Product',
+                ],
+            ]
         ];
 
         $response = $this->json('POST', '/api/products', $productData);
@@ -93,7 +98,13 @@ class ProductTest extends TestCase
     public function test_create_product_with_price_not_number()
     {
         $productData = [
-            'name' => 'Super Product', 'price' => 'Super Product'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Product',
+                    'price'=> 'Super Product',
+                ],
+            ]
+
         ];
 
         $response = $this->json('POST', '/api/products', $productData);
@@ -113,7 +124,12 @@ class ProductTest extends TestCase
     public function test_create_product_with_price_less_than_zero()
     {
         $productData = [
-            'name' => 'Super Product', 'price' => '-2'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Product',
+                    'price'=> '-2',
+                ],
+            ]
         ];
 
         $response = $this->json('POST', '/api/products', $productData);
@@ -139,16 +155,20 @@ class ProductTest extends TestCase
         ]);
 
         $productData = [
-            'name' => 'Super product 2',
-            'price' => '23.50'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Products',
+                    'price'=> '23.70',
+                ],
+            ]
         ];
 
         $response = $this->put(route('products.update', $product->id), $productData);
 
         $response->assertStatus(200)
             ->assertJsonFragment([
-                'name' => 'Super product 2',
-                'price' => '23.50',
+                'name' => 'Super Products',
+                'price' => '23.70',
             ]);
 
     }
@@ -164,10 +184,14 @@ class ProductTest extends TestCase
             'price' => '23.30',
         ]);
 
-        $productData = [
-            'name' => 'Super product 2',
-            'price' => 'Hola'
-        ];
+            $productData = [
+                'data' => [
+                    'attributes' => [
+                        'name' => 'Super Product 2',
+                        'price'=> 'Hola',
+                    ],
+                ]
+            ];
 
         $response = $this->put(route('products.update', $product->id), $productData);
 
@@ -191,8 +215,12 @@ class ProductTest extends TestCase
         ]);
 
         $productData = [
-            'name' => 'Super product 2',
-            'price' => '-20'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Product 2',
+                    'price'=> '-20',
+                ],
+            ]
         ];
 
         $response = $this->put(route('products.update', $product->id), $productData);
@@ -212,8 +240,12 @@ class ProductTest extends TestCase
     {
         $id = 1;
         $productData = [
-            'name' => 'Super product 2',
-            'price' => '-20'
+            'data' => [
+                'attributes' => [
+                    'name' => 'Super Product 2',
+                    'price'=> '-20',
+                ],
+            ]
         ];
 
         $response = $this->put(route('products.update', $id), $productData);

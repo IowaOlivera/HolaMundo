@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 
 use App\ErrorContent;
 use App\ErrorMessage;
+use App\Http\Resources\ProductCollection;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Product as ProductResource;
 
 class ProductController extends Controller
 {
@@ -18,7 +20,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $product = Product::all();
+        $product = ProductResource::collection(Product::all());
         return response()->json($product, 200);
     }
 
@@ -29,7 +31,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //return view('createProduct');
+        //
     }
 
     /**
@@ -40,8 +42,8 @@ class ProductController extends Controller
      */
     public function store(Request $request) {
         $validatedData = Validator::make($request->all(), [
-            'name' => 'required',
-            'price' => 'required|numeric|gte:0'
+                'data.attributes.name' => 'required',
+                'data.attributes.price' => 'required|numeric|gte:0'
         ]);
         if($validatedData->fails()) {
             $responseError = new ErrorMessage();
@@ -50,7 +52,10 @@ class ProductController extends Controller
             ));
             return response()->json($responseError, 422);
         }else{
+            $request['name'] = $request['data.attributes.name'];
+            $request['price'] = $request['data.attributes.price'];
             $product = Product::create($request->all());
+            $product = new ProductResource($product);
             return response()->json($product, 201);
         }
     }
@@ -73,8 +78,12 @@ class ProductController extends Controller
 
             return response()->json($responseError, 404);
         }else{
+
+            $product = new ProductResource($product);
+            $product = $product->showProduct($product);
             return response()->json($product, 200);
         }
+
 
 
     }
@@ -110,7 +119,7 @@ class ProductController extends Controller
             return response()->json($responseError, 404);
         }else{
             $validatedData = Validator::make($request->all(), [
-                'price' => 'numeric|gte:0'
+                'data.attributes.price' => 'numeric|gte:0'
             ]);
         }
         if($validatedData->fails()) {
@@ -119,7 +128,10 @@ class ProductController extends Controller
             ));
             return response()->json($responseError, 422);
         }else{
+            $request['price'] = $request['data.attributes.price'];
+            $request['name'] = $request['data.attributes.name'];
             $product->update($request->all());
+            $product = new ProductResource($product);
             return response()->json($product, 200);
         }
     }

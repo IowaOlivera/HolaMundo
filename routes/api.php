@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
-
+use App\Product;
+use App\Http\Resources\Product as ProductResource;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,7 +24,6 @@ Route::get('/greeting', function (Request $request){
    // return response()->json([
         //'message' => 'Page Not Found. If error persists, contact info@website.com'], 404);
 //});
-
 Route::post('products', "ProductController@store");
 Route::get('products', "ProductController@index");
 Route::delete('products/{id}', "ProductController@destroy")->name('products.destroy');
